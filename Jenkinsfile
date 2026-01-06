@@ -80,23 +80,25 @@ stage('Run System in Docker') {
         /* =========================
            BACKEND READY
         ========================= */
-        stage('Wait for Backend') {
+stage('Wait for Backend') {
     steps {
         sh '''
-        echo "Waiting for backend (HTTP 200)..."
-        for i in {1..30}; do
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8085/actuator/health)
-          if [ "$STATUS" = "200" ]; then
-            echo "Backend is responding (200)"
-            exit 0
-          fi
-          sleep 2
-        done
-        echo "Backend NOT responding"
-        exit 1
+            echo "Waiting for backend (actuator health)..."
+            for i in {1..30}; do
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8085/actuator/health || true)
+              echo "Attempt $i -> HTTP $STATUS"
+              if [ "$STATUS" = "200" ]; then
+                echo "Backend is READY"
+                exit 0
+              fi
+              sleep 2
+            done
+            echo "Backend NOT ready after timeout"
+            exit 1
         '''
     }
 }
+
 
 
         /* =========================
