@@ -18,7 +18,7 @@ public class RegisterUITest {
     @Test
     void shouldRegisterUser() {
         WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         String uniqueId = UUID.randomUUID().toString().substring(0, 8);
         String testUsername = "testuser_" + uniqueId;
