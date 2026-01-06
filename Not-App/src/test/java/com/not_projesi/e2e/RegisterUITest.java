@@ -18,40 +18,29 @@ public class RegisterUITest {
     @Test
     void shouldRegisterUser() {
         WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         String uniqueId = UUID.randomUUID().toString().substring(0, 8);
         String testUsername = "testuser_" + uniqueId;
         String testEmail = "test_" + uniqueId + "@test.com";
 
         try {
-            driver.get("http://localhost/");
+            driver.get("http://localhost:5173/register");
 
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("username")))
-                    .sendKeys(testUsername);
+            driver.findElement(By.name("username")).sendKeys(testUsername);
+            driver.findElement(By.name("ogrenciSifre")).sendKeys("123456");
+            driver.findElement(By.name("ogrenciAdi")).sendKeys("Test");
+            driver.findElement(By.name("ogrenciSoyadi")).sendKeys("User");
+            driver.findElement(By.name("ogrenciEmail")).sendKeys(testEmail);
+            driver.findElement(By.name("bolumId")).sendKeys("1");
 
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciSifre")))
-                    .sendKeys("123456");
+            driver.findElement(By.tagName("button")).click();
 
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciAdi")))
-                    .sendKeys("Test");
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciSoyadi")))
-                    .sendKeys("User");
-
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciEmail")))
-                    .sendKeys(testEmail);
-
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("bolumId")))
-                    .sendKeys("1");
-
-            wait.until(ExpectedConditions.elementToBeClickable(
-                    By.cssSelector("button[type='submit']")
-            )).click();
-
-            /* ✅ SADECE REGISTER MESAJI DOĞRULANIR */
             WebElement msg = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(By.id("registerMessage"))
+                    ExpectedConditions.visibilityOfElementLocated(
+                            By.id("registerMessage")
+                    )
             );
 
             Assertions.assertTrue(
