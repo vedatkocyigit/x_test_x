@@ -20,46 +20,77 @@ public class RegisterLoginProfileUpdateUITest {
     @Order(4)
     @Test
     void registerLoginAndUpdateProfile() {
+
         WebDriver driver = new ChromeDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         try {
-
             String randomUsername = "user" + UUID.randomUUID().toString().substring(0, 8);
             String randomEmail = "email" + UUID.randomUUID().toString().substring(0, 8) + "@test.com";
 
-            driver.get("http://localhost:5173/register");
-            driver.findElement(By.name("username")).sendKeys(randomUsername);
-            driver.findElement(By.name("ogrenciSifre")).sendKeys("123456");
-            driver.findElement(By.name("ogrenciAdi")).sendKeys("Test");
-            driver.findElement(By.name("ogrenciSoyadi")).sendKeys("User");
-            driver.findElement(By.name("ogrenciEmail")).sendKeys(randomEmail);
-            driver.findElement(By.name("bolumId")).sendKeys("1");
-            driver.findElement(By.tagName("button")).click();
+            // =====================
+            // REGISTER
+            // =====================
+            driver.get("http://localhost/register");
+
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("username")))
+                    .sendKeys(randomUsername);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciSifre")))
+                    .sendKeys("123456");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciAdi")))
+                    .sendKeys("Test");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciSoyadi")))
+                    .sendKeys("User");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciEmail")))
+                    .sendKeys(randomEmail);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("bolumId")))
+                    .sendKeys("1");
+
+            wait.until(ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("button[type='submit']")
+            )).click();
 
             WebElement registerMsg = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(By.id("registerMessage"))
             );
             assert registerMsg.getText().toLowerCase().contains("kayıt");
 
+            // =====================
+            // LOGIN
+            // =====================
             driver.get("http://localhost/login");
-            driver.findElement(By.name("username")).sendKeys(randomUsername);
-            driver.findElement(By.name("ogrenciSifre")).sendKeys("123456");
-            driver.findElement(By.name("ogrenciAdi")).sendKeys("Test");
-            driver.findElement(By.name("ogrenciSoyadi")).sendKeys("User");
-            driver.findElement(By.name("ogrenciEmail")).sendKeys(randomEmail);
-            driver.findElement(By.name("bolumId")).sendKeys("1");
-            driver.findElement(By.tagName("button")).click();
+
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("username")))
+                    .sendKeys(randomUsername);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciSifre")))
+                    .sendKeys("123456");
+
+            wait.until(ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("button[type='submit']")
+            )).click();
 
             wait.until(ExpectedConditions.urlContains("/home"));
 
+            // =====================
+            // PROFILE UPDATE
+            // =====================
             driver.get("http://localhost/profile-update");
 
-            WebElement adi = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciAdi")));
-            WebElement soyadi = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciSoyadi")));
-            WebElement emailField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciEmail")));
-            WebElement bolumAdi = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("bolumAdi")));
-            WebElement fakulteAdi = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("fakulteAdi")));
+            WebElement adi = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciAdi"))
+            );
+            WebElement soyadi = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciSoyadi"))
+            );
+            WebElement emailField = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciEmail"))
+            );
+            WebElement bolumAdi = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(By.name("bolumAdi"))
+            );
+            WebElement fakulteAdi = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(By.name("fakulteAdi"))
+            );
 
             String newRandomEmail = "updated" + UUID.randomUUID().toString().substring(0, 8) + "@test.com";
 
@@ -74,7 +105,9 @@ public class RegisterLoginProfileUpdateUITest {
             fakulteAdi.clear();
             fakulteAdi.sendKeys("Mühendislik");
 
-            driver.findElement(By.cssSelector("button[type='submit']")).click();
+            wait.until(ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("button[type='submit']")
+            )).click();
 
             wait.until(ExpectedConditions.alertIsPresent());
             driver.switchTo().alert().accept();
