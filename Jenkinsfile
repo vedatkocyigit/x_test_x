@@ -1,11 +1,10 @@
 pipeline {
     agent any
 
-        environment {
+    environment {
         PATH = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
         JAVA_HOME = "/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home"
     }
-    
 
     stages {
 
@@ -27,7 +26,6 @@ pipeline {
 
         stage('Unit Tests') {
             steps {
-                echo 'Birim testler...'
                 dir('Not-App') {
                     sh 'mvn test'
                 }
@@ -43,7 +41,6 @@ pipeline {
 
         stage('Integration Tests') {
             steps {
-                echo 'Entegrasyon testleri...'
                 dir('Not-App') {
                     sh 'mvn verify'
                 }
@@ -57,32 +54,68 @@ pipeline {
             }
         }
 
-stage('Run System in Docker') {
-    steps {
-        echo 'Docker Compose ile sistem ayağa kaldırılıyor...'
-        sh '''
-            set -e
-
-            echo "== Docker Compose CLEANUP (if exists) =="
-            docker compose -f docker-compose.yml down || true
-
-            echo "== Docker Compose BUILD & UP =="
-            docker compose -f docker-compose.yml up -d --build
-
-            echo "== Docker Compose STATUS =="
-            docker compose -f docker-compose.yml ps
-        '''
-    }
-}
-
-
-        stage('Wait for System') {
+        /* =========================
+           DOCKER COMPOSE
+        ========================= */
+        stage('Run System in Docker') {
             steps {
-                echo 'Sistem ayaga kalkıyor, 10 saniye bekleniyor...'
-                sleep time: 10, unit: 'SECONDS'
+                sh '''
+                    set -e
+                    echo "== Docker Compose CLEANUP =="
+                    docker compose down || true
+
+                    echo "== Docker Compose BUILD & UP =="
+                    docker compose up -d --build
+
+                    echo "== Docker Compose STATUS =="
+                    docker compose ps
+                '''
             }
         }
 
+        /* =========================
+           BACKEND READY
+        ========================= */
+        stage('Wait for Backend') {
+            steps {
+                sh '''
+                    echo "Waiting for backend (actuator/health)..."
+                    for i in {1..30}; do
+                      if curl -s http://localhost:8085/actuator/health | grep -q '"status":"UP"'; then
+                        echo "Backend is UP"
+                        exit 0
+                      fi
+                      sleep 2
+                    done
+                    echo "Backend NOT ready"
+                    exit 1
+                '''
+            }
+        }
+
+        /* =========================
+           FRONTEND READY
+        ========================= */
+        stage('Wait for Frontend') {
+            steps {
+                sh '''
+                    echo "Waiting for frontend (React)..."
+                    for i in {1..30}; do
+                      if curl -s http://localhost | grep -q "<div id=\\"root\\""; then
+                        echo "Frontend is READY"
+                        exit 0
+                      fi
+                      sleep 2
+                    done
+                    echo "Frontend NOT ready"
+                    exit 1
+                '''
+            }
+        }
+
+        /* =========================
+           UI TESTS
+        ========================= */
         stage('UI Test: Register Success') {
             steps {
                 dir('Not-App') {
