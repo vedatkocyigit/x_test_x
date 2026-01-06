@@ -42,7 +42,7 @@ public class RegisterLoginProfileUpdateUITest {
             );
             assert registerMsg.getText().toLowerCase().contains("kayıt");
 
-            driver.get("http://localhost:5173/login");
+            driver.get("http://localhost/login");
             driver.findElement(By.name("username")).sendKeys(randomUsername);
             driver.findElement(By.name("ogrenciSifre")).sendKeys("123456");
             driver.findElement(By.name("ogrenciAdi")).sendKeys("Test");
@@ -53,7 +53,7 @@ public class RegisterLoginProfileUpdateUITest {
 
             wait.until(ExpectedConditions.urlContains("/home"));
 
-            driver.get("http://localhost:5173/profile-update");
+            driver.get("http://localhost/profile-update");
 
             WebElement adi = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciAdi")));
             WebElement soyadi = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciSoyadi")));
