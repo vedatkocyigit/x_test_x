@@ -50,7 +50,7 @@ services:
     build: ./Not-App-Frontend
     container_name: not-frontend
     ports:
-      - "5173:80"
+      - "80:80"
     depends_on:
       - app
     networks:

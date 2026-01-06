@@ -35,7 +35,7 @@ export default function DersNotuEkle() {
       formData.append("pdfFile", form.pdfFile);
       formData.append("pdfOnizlemeFile", form.pdfOnizlemeFile);
 
-      const response = await fetch("http://localhost:8085/rest/ders-notu/ekle", {
+      const response = await fetch("/rest/ders-notu/ekle", {
         method: "POST",
         body: formData,
         headers: {

@@ -19,7 +19,7 @@ export default function Favorilerim() {
     useEffect(() => {
         const fetchFavoriler = async () => {
             try {
-                const response = await fetch(`http://localhost:8085/rest/begen/${user.username}`, {
+                const response = await fetch(`/rest/begen/${user.username}`, {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${localStorage.getItem("token")}`
@@ -43,7 +43,7 @@ export default function Favorilerim() {
     // Favoriden kaldır
     const removeFavori = async (begenId) => {
         try {
-            const response = await fetch(`http://localhost:8085/rest/begen/delete/${begenId}`, {
+            const response = await fetch(`/rest/begen/delete/${begenId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -125,8 +125,8 @@ export default function Favorilerim() {
                             <p><strong>Not Türü:</strong> {fav.dersNotu.notTuru?.notAdi || "-"}</p>
                             <p><strong>Kullanıcı:</strong> {fav.dersNotu.ogrenci?.username}</p>
                             <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-                                <a href={`http://localhost:8085/${fav.dersNotu.dersNotPdf}`} target="_blank" rel="noopener noreferrer">PDF</a>
-                                <a href={`http://localhost:8085/${fav.dersNotu.dersNotPdfOnizleme}`} target="_blank" rel="noopener noreferrer">Önizleme</a>
+                                <a href={`/${fav.dersNotu.dersNotPdf}`} target="_blank" rel="noopener noreferrer">PDF</a>
+                                <a href={`/${fav.dersNotu.dersNotPdfOnizleme}`} target="_blank" rel="noopener noreferrer">Önizleme</a>
                             </div>
                         </div>
                     ))}
