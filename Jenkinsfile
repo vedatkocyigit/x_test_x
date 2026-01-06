@@ -57,7 +57,7 @@ pipeline {
             }
         }
 
-        stage('Run System in Docker') {
+stage('Run System in Docker') {
     steps {
         echo 'Docker Compose ile sistem ayağa kaldırılıyor...'
         sh '''
@@ -74,6 +74,7 @@ pipeline {
         '''
     }
 }
+
 
         stage('Wait for System') {
             steps {
