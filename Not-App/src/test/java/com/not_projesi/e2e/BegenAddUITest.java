@@ -29,7 +29,7 @@ public class BegenAddUITest {
             String randomEmail = "email" + UUID.randomUUID().toString().substring(0, 8) + "@test.com";
             String password = "123456";
 
-            driver.get("http://localhost:5173/register");
+            driver.get("http://localhost/register");
             driver.findElement(By.name("username")).sendKeys(randomUsername);
             driver.findElement(By.name("ogrenciSifre")).sendKeys(password);
             driver.findElement(By.name("ogrenciAdi")).sendKeys("Selenium");
@@ -43,7 +43,7 @@ public class BegenAddUITest {
             );
             assert registerMsg.getText().toLowerCase().contains("kayıt");
 
-            driver.get("http://localhost:5173/login");
+            driver.get("http://localhost/login");
             driver.findElement(By.name("username")).sendKeys(randomUsername);
             driver.findElement(By.name("ogrenciSifre")).sendKeys(password);
             driver.findElement(By.name("ogrenciAdi")).sendKeys("Selenium");
