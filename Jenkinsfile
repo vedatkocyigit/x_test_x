@@ -57,21 +57,25 @@ pipeline {
         /* =========================
            DOCKER COMPOSE
         ========================= */
-        stage('Run System in Docker') {
-            steps {
-                sh '''
-                    set -e
-                    echo "== Docker Compose CLEANUP =="
-                    docker compose down || true
+stage('Run System in Docker') {
+    steps {
+        echo 'Docker Compose ile sistem ayağa kaldırılıyor...'
+        sh '''
+            set -e
 
-                    echo "== Docker Compose BUILD & UP =="
-                    docker compose up -d --build
+            echo "== FORCE CLEANUP =="
+            docker ps -aq --filter "name=not-" | xargs -r docker rm -f
 
-                    echo "== Docker Compose STATUS =="
-                    docker compose ps
-                '''
-            }
-        }
+            echo "== Docker Compose DOWN (volumes & orphans) =="
+            docker compose -f docker-compose.yml down -v --remove-orphans || true
+
+            echo "== Docker Compose UP =="
+            docker compose -f docker-compose.yml up -d --build
+
+            docker compose ps
+        '''
+    }
+}
 
         /* =========================
            BACKEND READY
