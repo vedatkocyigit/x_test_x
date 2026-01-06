@@ -24,7 +24,7 @@ public class RegisterUITest {
         String testEmail = "test_" + uniqueId + "@test.com";
 
         try {
-            driver.get("http://localhost:5173/register");
+            driver.get("http://localhost/register");
 
             driver.findElement(By.name("username")).sendKeys(testUsername);
             driver.findElement(By.name("ogrenciSifre")).sendKeys("123456");
