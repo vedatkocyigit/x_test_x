@@ -25,7 +25,7 @@ public class RegisterUITest {
         String testEmail = "test_" + uniqueId + "@test.com";
 
         try {
-            driver.get("http://localhost/register");
+            driver.get("http://localhost/");
 
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("username")))
                     .sendKeys(testUsername);
