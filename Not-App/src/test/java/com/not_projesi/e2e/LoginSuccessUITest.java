@@ -28,7 +28,7 @@ public class LoginSuccessUITest {
             String randomUsername = "user" + UUID.randomUUID().toString().substring(0, 8);
             String randomEmail = "email" + UUID.randomUUID().toString().substring(0, 8) + "@test.com";
 
-            driver.get("http://localhost:5173/register");
+            driver.get("http://localhost/register");
 
             driver.findElement(By.name("username")).sendKeys(randomUsername);
             driver.findElement(By.name("ogrenciSifre")).sendKeys("123456");
@@ -46,7 +46,7 @@ public class LoginSuccessUITest {
 
             assert registerMsg.getText().toLowerCase().contains("kayıt");
 
-            driver.get("http://localhost:5173/login");
+            driver.get("http://localhost/login");
 
             driver.findElement(By.name("username")).sendKeys(randomUsername);
             driver.findElement(By.name("ogrenciSifre")).sendKeys("123456");
