@@ -22,35 +22,56 @@ public class SecurityConfig {
     @Autowired
     private AuthenticationProvider authenticationProvider;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                                       .requestMatchers("/actuator/health").permitAll()
-                        .requestMatchers(
-                                "/auth/**",
-                                "/authenticate",
-                                "/refreshtoken",
-                                "/register",
-                                "/rest/guncelle/profil-bilgi/{username}",
-                                "/rest/**",
-                                "/rest/sepet/**",
-                                "/ai/**",
-                                "/ders-notlari-onizleme/**",
-                                "/ders-notlari/**",
-                                "/swagger-ui/**",
-                                "/notes/upload",
-                                "/v3/api-docs/**",
-                                "/swagger.html"
-                        ).permitAll()
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .cors(Customizer.withDefaults())
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
 
-        return http.build();
-    }
+            // 🔓 ACTUATOR
+            .requestMatchers("/actuator/health").permitAll()
+
+            // 🔓 FRONTEND (SPA ROUTES)
+            .requestMatchers(
+                "/",
+                "/index.html",
+                "/login",
+                "/register",
+                "/home",
+                "/profile-update",
+                "/ders-notu-ekle",
+                "/ders-ekle",
+                "/favorilerim",
+                "/notlarim",
+                "/assets/**",
+                "/favicon.ico"
+            ).permitAll()
+
+            // 🔓 BACKEND AUTH & API
+            .requestMatchers(
+                "/auth/**",
+                "/authenticate",
+                "/refreshtoken",
+                "/rest/guncelle/profil-bilgi/{username}",
+                "/rest/**",
+                "/rest/sepet/**",
+                "/ai/**",
+                "/ders-notlari-onizleme/**",
+                "/ders-notlari/**",
+                "/swagger-ui/**",
+                "/notes/upload",
+                "/v3/api-docs/**",
+                "/swagger.html"
+            ).permitAll()
+
+            // 🔐 DİĞERLERİ
+            .anyRequest().authenticated()
+        )
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authenticationProvider(authenticationProvider)
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+    return http.build();
+}
 }
