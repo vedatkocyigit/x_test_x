@@ -3,6 +3,7 @@ package com.not_projesi.e2e;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -48,15 +49,14 @@ public class RegisterUITest {
                     By.cssSelector("button[type='submit']")
             )).click();
 
-            wait.until(ExpectedConditions.or(
-                    ExpectedConditions.urlContains("/login"),
-                    ExpectedConditions.urlContains("/home")
-            ));
+            /* ✅ SADECE REGISTER MESAJI DOĞRULANIR */
+            WebElement msg = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(By.id("registerMessage"))
+            );
 
             Assertions.assertTrue(
-                    driver.getCurrentUrl().contains("login")
-                            || driver.getCurrentUrl().contains("home"),
-                    "Kayıt sonrası yönlendirme gerçekleşmedi!"
+                    msg.getText().toLowerCase().contains("kayıt"),
+                    "Kayıt başarılı mesajı görünmedi!"
             );
 
         } finally {
