@@ -58,16 +58,22 @@ pipeline {
         }
 
         stage('Run System in Docker') {
-            steps {
-                echo 'Docker Compose ile sistem ayağa kaldırılıyor...'
-                sh '''
-                    set -e
-                    echo "== Docker Compose UP =="
-                    docker compose -f docker-compose.yml up -d --build
-                    docker compose -f docker-compose.yml ps
-                '''
-            }
-        }
+    steps {
+        echo 'Docker Compose ile sistem ayağa kaldırılıyor...'
+        sh '''
+            set -e
+
+            echo "== Docker Compose CLEANUP (if exists) =="
+            docker compose -f docker-compose.yml down || true
+
+            echo "== Docker Compose BUILD & UP =="
+            docker compose -f docker-compose.yml up -d --build
+
+            echo "== Docker Compose STATUS =="
+            docker compose -f docker-compose.yml ps
+        '''
+    }
+}
 
         stage('Wait for System') {
             steps {
