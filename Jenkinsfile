@@ -14,7 +14,7 @@ pipeline {
             steps {
                 echo 'Build ediliyor...'
                 dir('Not-App') {
-                    bat 'mvn clean package -DskipTests'
+                    sh 'mvn clean package -DskipTests'
                 }
             }
         }
@@ -23,7 +23,7 @@ pipeline {
             steps {
                 echo 'Birim testler...'
                 dir('Not-App') {
-                    bat 'mvn test'
+                    sh 'mvn test'
                 }
             }
             post {
@@ -39,7 +39,7 @@ pipeline {
             steps {
                 echo 'Entegrasyon testleri...'
                 dir('Not-App') {
-                    bat 'mvn verify'
+                    sh 'mvn verify'
                 }
             }
             post {
@@ -54,17 +54,12 @@ pipeline {
         stage('Run System in Docker') {
             steps {
                 echo 'Docker Compose ile sistem ayağa kaldırılıyor...'
-
-                powershell(script: '''
-                    $ErrorActionPreference = "Stop"
-
-                    Write-Host "== Docker Compose UP =="
-
-                    # Burada hiçbir volume silinmez
+                sh '''
+                    set -e
+                    echo "== Docker Compose UP =="
                     docker compose -f docker-compose.yml up -d --build
-
                     docker compose -f docker-compose.yml ps
-                ''')
+                '''
             }
         }
 
@@ -78,7 +73,7 @@ pipeline {
         stage('UI Test: Register Success') {
             steps {
                 dir('Not-App') {
-                    bat 'mvn test -Pui-tests -Dtest=RegisterUITest#shouldRegisterUser'
+                    sh 'mvn test -Pui-tests -Dtest=RegisterUITest#shouldRegisterUser'
                 }
             }
         }
@@ -86,7 +81,7 @@ pipeline {
         stage('UI Test: Login Fail') {
             steps {
                 dir('Not-App') {
-                    bat 'mvn test -Pui-tests -Dtest=LoginWrongUITest#shouldRegisterUserAndThenFailLogin'
+                    sh 'mvn test -Pui-tests -Dtest=LoginWrongUITest#shouldRegisterUserAndThenFailLogin'
                 }
             }
         }
@@ -94,7 +89,7 @@ pipeline {
         stage('UI Test: Login Success') {
             steps {
                 dir('Not-App') {
-                    bat 'mvn test -Pui-tests -Dtest=LoginSuccessUITest#shouldRegisterAndLoginUserSuccessfully'
+                    sh 'mvn test -Pui-tests -Dtest=LoginSuccessUITest#shouldRegisterAndLoginUserSuccessfully'
                 }
             }
         }
@@ -102,7 +97,7 @@ pipeline {
         stage('UI Test: Profil Update') {
             steps {
                 dir('Not-App') {
-                    bat 'mvn test -Pui-tests -Dtest=RegisterLoginProfileUpdateUITest#registerLoginAndUpdateProfile'
+                    sh 'mvn test -Pui-tests -Dtest=RegisterLoginProfileUpdateUITest#registerLoginAndUpdateProfile'
                 }
             }
         }
@@ -110,7 +105,7 @@ pipeline {
         stage('UI Test: Ders Note Add') {
             steps {
                 dir('Not-App') {
-                    bat 'mvn test -Pui-tests -Dtest=DersNotuAddUITest#registerLoginAndAddDersNotu'
+                    sh 'mvn test -Pui-tests -Dtest=DersNotuAddUITest#registerLoginAndAddDersNotu'
                 }
             }
         }
@@ -118,7 +113,7 @@ pipeline {
         stage('UI Test: Ders Note Add & Check') {
             steps {
                 dir('Not-App') {
-                    bat 'mvn test -Pui-tests -Dtest=DersNotuAddAndCheckUITest#registerLoginAddDersNotuAndCheckNotlarimThenLogout'
+                    sh 'mvn test -Pui-tests -Dtest=DersNotuAddAndCheckUITest#registerLoginAddDersNotuAndCheckNotlarimThenLogout'
                 }
             }
         }
@@ -126,7 +121,7 @@ pipeline {
         stage('UI Test: Ders Add') {
             steps {
                 dir('Not-App') {
-                    bat 'mvn test -Pui-tests -Dtest=DersAddUITest#registerLoginAddDersAndLogout'
+                    sh 'mvn test -Pui-tests -Dtest=DersAddUITest#registerLoginAddDersAndLogout'
                 }
             }
         }
@@ -134,7 +129,7 @@ pipeline {
         stage('UI Test: Begen Add') {
             steps {
                 dir('Not-App') {
-                    bat 'mvn test -Pui-tests -Dtest=BegenAddUITest#loginAndLikeAndUnlikeDersNot'
+                    sh 'mvn test -Pui-tests -Dtest=BegenAddUITest#loginAndLikeAndUnlikeDersNot'
                 }
             }
         }
@@ -142,7 +137,7 @@ pipeline {
         stage('UI Test: Begen List') {
             steps {
                 dir('Not-App') {
-                    bat 'mvn test -Pui-tests -Dtest=BegenListUITest#registerLoginLikeAndGoToFavorilerimAndLogout'
+                    sh 'mvn test -Pui-tests -Dtest=BegenListUITest#registerLoginLikeAndGoToFavorilerimAndLogout'
                 }
             }
         }
