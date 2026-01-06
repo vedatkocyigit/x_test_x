@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+        environment {
+        PATH = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
+        JAVA_HOME = "/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home"
+    }
+    
+
     stages {
 
         stage('Checkout Code') {
