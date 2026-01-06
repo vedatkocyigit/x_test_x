@@ -43,7 +43,7 @@ public class LoginWrongUITest {
 
             assert registerMsg.getText().toLowerCase().contains("kayıt");
 
-            driver.get("http://localhost:5173/login");
+            driver.get("http://localhost/login");
 
             driver.findElement(By.name("username")).sendKeys(randomUsername);
             driver.findElement(By.name("ogrenciSifre")).sendKeys("YANLIS");
