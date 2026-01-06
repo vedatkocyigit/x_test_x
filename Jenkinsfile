@@ -77,21 +77,23 @@ pipeline {
            BACKEND READY
         ========================= */
         stage('Wait for Backend') {
-            steps {
-                sh '''
-                    echo "Waiting for backend (actuator/health)..."
-                    for i in {1..30}; do
-                      if curl -s http://localhost:8085/actuator/health | grep -q '"status":"UP"'; then
-                        echo "Backend is UP"
-                        exit 0
-                      fi
-                      sleep 2
-                    done
-                    echo "Backend NOT ready"
-                    exit 1
-                '''
-            }
-        }
+    steps {
+        sh '''
+        echo "Waiting for backend (HTTP 200)..."
+        for i in {1..30}; do
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8085/actuator/health)
+          if [ "$STATUS" = "200" ]; then
+            echo "Backend is responding (200)"
+            exit 0
+          fi
+          sleep 2
+        done
+        echo "Backend NOT responding"
+        exit 1
+        '''
+    }
+}
+
 
         /* =========================
            FRONTEND READY
