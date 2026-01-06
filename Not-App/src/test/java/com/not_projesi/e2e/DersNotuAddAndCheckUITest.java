@@ -28,7 +28,7 @@ public class DersNotuAddAndCheckUITest {
             String randomUsername = "user" + UUID.randomUUID().toString().substring(0, 8);
             String randomEmail = "email" + UUID.randomUUID().toString().substring(0, 8) + "@test.com";
 
-            driver.get("http://localhost:5173/register");
+            driver.get("http://localhost/register");
             driver.findElement(By.name("username")).sendKeys(randomUsername);
             driver.findElement(By.name("ogrenciSifre")).sendKeys("123456");
             driver.findElement(By.name("ogrenciAdi")).sendKeys("Selenium7");
@@ -42,7 +42,7 @@ public class DersNotuAddAndCheckUITest {
             );
             assert registerMsg.getText().toLowerCase().contains("kayıt");
 
-            driver.get("http://localhost:5173/login");
+            driver.get("http://localhost/login");
             driver.findElement(By.name("username")).sendKeys(randomUsername);
             driver.findElement(By.name("ogrenciSifre")).sendKeys("123456");
             driver.findElement(By.name("ogrenciAdi")).sendKeys("Selenium7");
@@ -73,7 +73,7 @@ public class DersNotuAddAndCheckUITest {
             wait.until(ExpectedConditions.alertIsPresent());
             driver.switchTo().alert().accept();
 
-            driver.get("http://localhost:5173/home");
+            driver.get("http://localhost/home");
             WebElement notlarimBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnNotlarim")));
             notlarimBtn.click();
             wait.until(ExpectedConditions.urlContains("/notlarim"));
@@ -84,7 +84,7 @@ public class DersNotuAddAndCheckUITest {
 
             assert addedNote != null : "Ders notu Notlarım sayfasında görünmüyor!";
 
-            driver.get("http://localhost:5173/home");
+            driver.get("http://localhost/home");
             WebElement logoutBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Çıkış']")));
             logoutBtn.click();
             wait.until(ExpectedConditions.urlContains("/login"));
