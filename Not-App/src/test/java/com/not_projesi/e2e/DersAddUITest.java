@@ -19,23 +19,33 @@ public class DersAddUITest {
 
     @Order(6)
     @Test
-    void registerLoginAddDersAndLogout() throws InterruptedException {
+    void registerLoginAddDersAndLogout() {
+
         WebDriver driver = new ChromeDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         try {
-
             String randomUsername = "user" + UUID.randomUUID().toString().substring(0, 8);
             String randomEmail = "email" + UUID.randomUUID().toString().substring(0, 8) + "@test.com";
 
             driver.get("http://localhost/register");
-            driver.findElement(By.name("username")).sendKeys(randomUsername);
-            driver.findElement(By.name("ogrenciSifre")).sendKeys("123456");
-            driver.findElement(By.name("ogrenciAdi")).sendKeys("Selenium");
-            driver.findElement(By.name("ogrenciSoyadi")).sendKeys("Test");
-            driver.findElement(By.name("ogrenciEmail")).sendKeys(randomEmail);
-            driver.findElement(By.name("bolumId")).sendKeys("1");
-            driver.findElement(By.tagName("button")).click();
+
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("username")))
+                    .sendKeys(randomUsername);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciSifre")))
+                    .sendKeys("123456");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciAdi")))
+                    .sendKeys("Selenium");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciSoyadi")))
+                    .sendKeys("Test");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciEmail")))
+                    .sendKeys(randomEmail);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("bolumId")))
+                    .sendKeys("1");
+
+            wait.until(ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("button[type='submit']")
+            )).click();
 
             WebElement registerMsg = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(By.id("registerMessage"))
@@ -43,33 +53,47 @@ public class DersAddUITest {
             assert registerMsg.getText().toLowerCase().contains("kayıt");
 
             driver.get("http://localhost/login");
-            driver.findElement(By.name("username")).sendKeys(randomUsername);
-            driver.findElement(By.name("ogrenciSifre")).sendKeys("123456");
-            driver.findElement(By.name("ogrenciAdi")).sendKeys("Selenium");
-            driver.findElement(By.name("ogrenciSoyadi")).sendKeys("Test");
-            driver.findElement(By.name("ogrenciEmail")).sendKeys(randomEmail);
-            driver.findElement(By.name("bolumId")).sendKeys("1");
-            driver.findElement(By.tagName("button")).click();
+
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("username")))
+                    .sendKeys(randomUsername);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciSifre")))
+                    .sendKeys("123456");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciAdi")))
+                    .sendKeys("Selenium");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciSoyadi")))
+                    .sendKeys("Test");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciEmail")))
+                    .sendKeys(randomEmail);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("bolumId")))
+                    .sendKeys("1");
+
+            wait.until(ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("button[type='submit']")
+            )).click();
 
             wait.until(ExpectedConditions.urlContains("/home"));
 
-            WebElement dersEkleBtn = new WebDriverWait(driver, Duration.ofSeconds(10))
-                    .until(ExpectedConditions.visibilityOfElementLocated(By.id("btnDersEkle")));
-            dersEkleBtn.click();
-
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("btnDersEkle"))).click();
             wait.until(ExpectedConditions.urlContains("/ders-ekle"));
 
             String randomDersAdi = "Matematik " + UUID.randomUUID().toString().substring(0, 4);
-            driver.findElement(By.name("dersId")).sendKeys("1");
-            driver.findElement(By.name("dersAdi")).sendKeys(randomDersAdi);
 
-            WebElement submitBtn = driver.findElement(By.cssSelector("button[type='submit']"));
-            submitBtn.click();
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("dersId")))
+                    .sendKeys("1");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("dersAdi")))
+                    .sendKeys(randomDersAdi);
+
+            wait.until(ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("button[type='submit']")
+            )).click();
+
             wait.until(ExpectedConditions.alertIsPresent());
             driver.switchTo().alert().accept();
 
-            WebElement logoutBtn = driver.findElement(By.xpath("//button[text()='Çıkış']"));
-            logoutBtn.click();
+            wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("//button[text()='Çıkış']")
+            )).click();
+
             wait.until(ExpectedConditions.urlContains("/login"));
 
         } finally {
