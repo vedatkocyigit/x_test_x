@@ -19,39 +19,52 @@ public class LoginWrongUITest {
     void shouldRegisterUserAndThenFailLogin() {
 
         WebDriver driver = new ChromeDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         try {
-
             String randomUsername = "user" + UUID.randomUUID().toString().substring(0, 8);
             String randomEmail = "email" + UUID.randomUUID().toString().substring(0, 8) + "@test.com";
 
-            driver.get("http://localhost:5173/register");
+            // =====================
+            // REGISTER
+            // =====================
+            driver.get("http://localhost/register");
 
-            driver.findElement(By.name("username")).sendKeys(randomUsername);
-            driver.findElement(By.name("ogrenciSifre")).sendKeys("123456");
-            driver.findElement(By.name("ogrenciAdi")).sendKeys("Test");
-            driver.findElement(By.name("ogrenciSoyadi")).sendKeys("User");
-            driver.findElement(By.name("ogrenciEmail")).sendKeys(randomEmail);
-            driver.findElement(By.name("bolumId")).sendKeys("1");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("username")))
+                    .sendKeys(randomUsername);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciSifre")))
+                    .sendKeys("123456");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciAdi")))
+                    .sendKeys("Test");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciSoyadi")))
+                    .sendKeys("User");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciEmail")))
+                    .sendKeys(randomEmail);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("bolumId")))
+                    .sendKeys("1");
 
-            driver.findElement(By.tagName("button")).click();
+            wait.until(ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("button[type='submit']")
+            )).click();
 
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
             WebElement registerMsg = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(By.id("registerMessage"))
             );
-
             assert registerMsg.getText().toLowerCase().contains("kayıt");
 
+            // =====================
+            // LOGIN (WRONG PASSWORD)
+            // =====================
             driver.get("http://localhost/login");
 
-            driver.findElement(By.name("username")).sendKeys(randomUsername);
-            driver.findElement(By.name("ogrenciSifre")).sendKeys("YANLIS");
-            driver.findElement(By.name("ogrenciAdi")).sendKeys("Test");
-            driver.findElement(By.name("ogrenciSoyadi")).sendKeys("User");
-            driver.findElement(By.name("ogrenciEmail")).sendKeys(randomEmail);
-            driver.findElement(By.name("bolumId")).sendKeys("1");
-            driver.findElement(By.tagName("button")).click();
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("username")))
+                    .sendKeys(randomUsername);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("ogrenciSifre")))
+                    .sendKeys("YANLIS");
+
+            wait.until(ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("button[type='submit']")
+            )).click();
 
             WebElement error = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(By.id("loginError"))
