@@ -105,21 +105,23 @@ stage('Wait for Backend') {
            FRONTEND READY
         ========================= */
         stage('Wait for Frontend') {
-            steps {
-                sh '''
-                    echo "Waiting for frontend (React)..."
-                    for i in {1..30}; do
-                      if curl -s http://localhost | grep -q "<div id=\\"root\\""; then
-                        echo "Frontend is READY"
-                        exit 0
-                      fi
-                      sleep 2
-                    done
-                    echo "Frontend NOT ready"
-                    exit 1
-                '''
-            }
-        }
+    steps {
+        sh '''
+            echo "Waiting for frontend (React)..."
+            for i in {1..30}; do
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1 || true)
+              echo "Attempt $i -> HTTP $STATUS"
+              if [ "$STATUS" = "200" ]; then
+                echo "Frontend is READY"
+                exit 0
+              fi
+              sleep 2
+            done
+            echo "Frontend NOT ready"
+            exit 1
+        '''
+    }
+}
 
         /* =========================
            UI TESTS
